@@ -1,0 +1,60 @@
+﻿@page
+@model FreshFarmMarket.Pages.ErrorModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = "_Layout";
+}
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="col-md-6">
+        <div class="card shadow rounded-5 border-0">
+            <!-- Ultra rounded box -->
+            <div class="card-header bg-dark text-light text-center rounded-top-5">
+                @if (Model.StatusCode == 404)
+                {
+                    <h4 class="text-danger">Page Not Found (404) ❌</h4> <!-- Moved to the top -->
+                }
+                else if (Model.StatusCode == 403)
+                {
+                    <h4 class="text-warning">Access Denied (403)</h4>
+                }
+                else if (Model.StatusCode == 500)
+                {
+                    <h4 class="text-danger">Internal Server Error (500)</h4>
+                }
+                else
+                {
+                    <h4 class="text-primary">Unexpected Error</h4>
+                }
+            </div>
+            <div class="card-body text-center">
+                <p class="fw-bold">Something is wrong,There is an error.</p> <!-- Moved below -->
+                @if (Model.StatusCode == 404)
+                {
+                    <p>The page you’re trying to access may have been removed or is currently unavailable.</p>
+                }
+                else if (Model.StatusCode == 403)
+                {
+                    <p>You don’t have the necessary permission to view this page.</p>
+                }
+                else if (Model.StatusCode == 500)
+                {
+                    <p>An error occurred on our end. Please try again later.</p>
+                }
+                else
+                {
+                    <p>We're actively working to fix this issue. Please check back soon.</p>
+                }
+
+                @if (Model.ShowRequestId)
+                {
+                    <p class="text-muted small">
+                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                    </p>
+                }
+
+                <a asp-page="/Index" class="btn btn-outline-dark mt-3 rounded-pill px-4 py-2">Go to Home</a> <!-- Rounded button -->
+            </div>
+        </div>
+    </div>
+</div>
