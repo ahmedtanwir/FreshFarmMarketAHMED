@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Text.Encodings.Web; // ✅ Import HtmlEncoder for sanitization
+using System.Text.Encodings.Web; //HtmlEncoder for sanitization
 
 namespace FreshFarmMarket.Pages
 {
@@ -58,7 +58,6 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // ✅ Get authenticated user
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -66,12 +65,11 @@ namespace FreshFarmMarket.Pages
                 return RedirectToPage("/Login");
             }
 
-            // ✅ Sanitize input to prevent XSS attacks
+            //XSS attacks
             Input.CurrentPassword = HtmlEncoder.Default.Encode(Input.CurrentPassword);
             Input.NewPassword = HtmlEncoder.Default.Encode(Input.NewPassword);
             Input.ConfirmNewPassword = HtmlEncoder.Default.Encode(Input.ConfirmNewPassword);
 
-            // ✅ Check if current password is correct
             var passwordCheck = await _userManager.CheckPasswordAsync(user, Input.CurrentPassword);
             if (!passwordCheck)
             {
@@ -80,7 +78,6 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // ✅ Enforce Minimum Password Age (Cannot change password too soon)
             int minPasswordAgeMinutes = 5; // Set to 5 mins for testing; adjust as needed
             if (user.LastPasswordChange.HasValue && DateTime.UtcNow < user.LastPasswordChange.Value.AddMinutes(minPasswordAgeMinutes))
             {
@@ -88,7 +85,6 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // ✅ Enforce Maximum Password Age (Must change password after X days)
             int maxPasswordAgeDays = 90; // Force change after 90 days
             if (user.LastPasswordChange.HasValue && DateTime.UtcNow > user.LastPasswordChange.Value.AddDays(maxPasswordAgeDays))
             {
@@ -96,7 +92,6 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // ✅ Prevent Password Reuse (Check last 2 passwords)
             int passwordHistoryLimit = 2;
             var passwordHasher = new PasswordHasher<ApplicationUser>();
 
@@ -109,7 +104,7 @@ namespace FreshFarmMarket.Pages
                 }
             }
 
-            // ✅ Attempt password change
+  
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.CurrentPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
@@ -120,7 +115,7 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // ✅ Update password history (Keep only last 2 passwords)
+            //  Update password history (Keep only last 2 passwords)
             if (user.PasswordHistory == null)
             {
                 user.PasswordHistory = new List<string>();
@@ -129,10 +124,10 @@ namespace FreshFarmMarket.Pages
             user.PasswordHistory.Add(user.PasswordHash); // Store previous password
             if (user.PasswordHistory.Count > passwordHistoryLimit)
             {
-                user.PasswordHistory.RemoveAt(0); // Keep only last 2 passwords
+                user.PasswordHistory.RemoveAt(0); 
             }
 
-            // ✅ Update last password change timestamp
+            //  Update last password change timestamp
             user.LastPasswordChange = DateTime.UtcNow;
 
             await _userManager.UpdateAsync(user);

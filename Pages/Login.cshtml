@@ -15,8 +15,7 @@
                 </div>
                 <div class="card-body">
                     <form method="post" id="loginForm">
-                        <!--  Show Validation Errors -->
-                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+                        
 
                         <!--  Error Message for Login Failure -->
                         @if (!string.IsNullOrEmpty(Model.ErrorMessage))

@@ -9,11 +9,11 @@ using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//  Register Google reCAPTCHA Service
+//Google reCAPTCHA Service
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<GoogleRecaptchaService>();
 
-builder.Services.AddScoped<IEmailService, EmailService>(); // Registering the EmailService for Dependency Injection
+builder.Services.AddScoped<IEmailService, EmailService>(); 
 
 builder.Services.AddRazorPages();
 
@@ -25,7 +25,6 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // Password settings (Security Enhanced)
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
