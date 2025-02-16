@@ -39,14 +39,12 @@ namespace FreshFarmMarket.Pages
         [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; }
 
-        // On GET method, bind the Token and Email from query string parameters
         public void OnGet(string email, string token)
         {
             Token = token;
             Email = email;
         }
 
-        // On POST method, process password reset
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -54,7 +52,6 @@ namespace FreshFarmMarket.Pages
                 return Page();
             }
 
-            // Find the user by email
             var user = await _userManager.FindByEmailAsync(Email);
             if (user == null)
             {
@@ -62,7 +59,6 @@ namespace FreshFarmMarket.Pages
                 return RedirectToPage("/Login"); // Redirect to login page if user doesn't exist
             }
 
-            // Reset password using the token and new password
             var result = await _userManager.ResetPasswordAsync(user, Token, NewPassword);
             if (result.Succeeded)
             {
@@ -70,13 +66,12 @@ namespace FreshFarmMarket.Pages
                 return RedirectToPage("/Login"); // Redirect to login page after successful reset
             }
 
-            // Add errors if password reset failed
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return Page(); // Return the page if there are validation errors
+            return Page(); 
         }
     }
 }
